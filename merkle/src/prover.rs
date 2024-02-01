@@ -38,6 +38,19 @@ pub fn gen_merkle_proof(leaves: Vec<String>, leaf_pos: usize) -> Vec<Hash32Bytes
     let mut level_pos = leaf_pos;
     for level in 0..height {
         //FILL ME IN
+        let sibling_pos = if level_pos % 2 == 0 {
+            level_pos + 1
+        } else {
+            level_pos -1
+        };
+
+        let sibling_hash = state[sibling_pos];
+
+        let parent_hash = hash_internal(state[level_pos], sibling_hash);
+        hashed.push(parent_hash);
+
+        level_pos >>= 1;
+        state.push(parent_hash);
     }
 
     // Returns list of hashes that make up the Merkle Proof
